@@ -1,0 +1,6 @@
+node_modules
+CMS/node_modules
+SERVER/node_modules
+.git
+*.log
+.DS_Store

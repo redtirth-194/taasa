@@ -1,0 +1,26 @@
+{
+  "name": "taasha-server",
+  "version": "1.0.0",
+  "description": "REST API Backend for Taasha Luxury Fashion E-Commerce",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "build": "node scripts/prepare-db.js && prisma generate && prisma db push",
+    "postinstall": "node scripts/prepare-db.js && prisma generate",
+    "seed": "node src/prisma/seed.js",
+    "seed:force": "node src/prisma/seed.js --force",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:push": "prisma db push"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "prisma": "^6.4.1"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "taasa-luxury-couture",
+  "version": "1.0.0",
+  "description": "Taasa Luxury Indian Couture & Handloom E-Commerce Platform",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix CMS install && npm --prefix SERVER install",
+    "install:all": "npm --prefix CMS install && npm --prefix SERVER install",
+    "build:frontend": "npm --prefix CMS run build",
+    "build:backend": "npm --prefix SERVER run build",
+    "build": "npm --prefix CMS run build && npm --prefix SERVER run build",
+    "start": "node SERVER/src/index.js",
+    "dev:frontend": "npm --prefix CMS run dev",
+    "dev:backend": "npm --prefix SERVER dev",
+    "seed": "npm --prefix SERVER run seed",
+    "seed:force": "npm --prefix SERVER run seed:force",
+    "test:api": "node SERVER/test-api.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

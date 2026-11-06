@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              Int              @id @default(autoincrement())
+  slug            String           @unique
+  title           String
+  vendor          String           @default("Taasa Atelier")
+  category        String           // e.g. "Silk Dresses", "Tops & Corsets", "Matching Sets", "Knitwear", "Accessories"
+  subcategory     String?          // e.g. "Short", "Long", "Sleeveless", "Straight Cut", "Shirts", "Tunics", "Anarkali", etc.
+  aesthetic       String           // e.g. "Coquette", "Romantic", "Clean Girl", "Evening Glam", "Butter Yellow"
+  description     String
+  fabric          String           @default("100% Ethical Mulberry Silk Charmeuse")
+  care            String           @default("Dry clean or delicate hand wash with cold water")
+  basePrice       Float
+  salePrice       Float?
+  stockQuantity   Int              @default(25)
+  ratingsAvg      Float            @default(4.9)
+  reviewsCount    Int              @default(0)
+  badge           String?          // e.g. "💖 Viral Pick", "✨ Trending", "-15% Off", "🌸 Staff Pick"
+  isNew           Boolean          @default(true)
+  isFeatured      Boolean          @default(false)
+  image           String
+  hoverImage      String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  variants        ProductVariant[]
+  reviews         Review[]
+  ugcPosts        UGCPost[]
+}
+
+model ProductVariant {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  colorName   String   // e.g. "Blush Rose"
+  colorHex    String   // e.g. "#ffc2d1"
+  size        String   // e.g. "XS", "S", "M", "L", "XL"
+  sku         String?
+  inventory   Int      @default(10)
+  image       String?
+
+  @@unique([productId, colorName, size])
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  orderNumber     String   @unique // e.g. "TSH-8941"
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  shippingAddress String   // JSON string of address details
+  items           String   // JSON string of ordered items
+  subtotal        Float
+  discount        Float    @default(0)
+  shippingFee     Float    @default(0)
+  total           Float
+  status          String   @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentMethod   String   @default("CARD") // CARD, UPI, NET_BANKING, APPLE_PAY, KLARNA, COD
+  paymentStatus   String   @default("PAID") // PENDING, PAID, FAILED, REFUNDED
+  paymentId       String?  // Stripe Payment Intent ID or Razorpay / UPI Reference
+  promoCode       String?
+  giftPackaging   Boolean  @default(false)
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  productId     Int
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  authorName    String
+  authorEmail   String?
+  rating        Int      @default(5)
+  title         String
+  body          String
+  verifiedBuyer Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+model PromoCode {
+  id           Int       @id @default(autoincrement())
+  code         String    @unique
+  discountType String    @default("PERCENTAGE") // PERCENTAGE or FIXED
+  value        Float     // e.g. 0.20 for 20% or 20.00 for $20
+  minOrder     Float     @default(0)
+  active       Boolean   @default(true)
+  usageCount   Int       @default(0)
+  expiryDate   DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model UGCPost {
+  id           Int      @id @default(autoincrement())
+  creator      String   // e.g. "@serena.vance"
+  creatorName  String
+  avatar       String
+  location     String?
+  verified     Boolean  @default(true)
+  caption      String
+  likes        Int      @default(0)
+  aspectClass  String   @default("aspect-portrait") // aspect-tall, aspect-portrait, aspect-editorial, aspect-square
+  image        String
+  isReel       Boolean  @default(false)
+  reelDuration String?
+  category     String   @default("coquette")
+  badge        String?
+  status       String   @default("APPROVED") // APPROVED or PENDING
+  productId    Int?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  source           String   @default("FOOTER_FORM")
+  discountCodeSent String   @default("MUSE15")
+  createdAt        DateTime @default(now())
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  subtypes    String?  // JSON string array e.g. '["short", "long", "sleeveless", "straight cut", "shirts", "Tunics"]'
+  image       String?
+  badge       String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
