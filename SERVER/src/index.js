@@ -64,8 +64,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('dev'));
 
-// API Health Check
-app.get('/api/health', async (req, res) => {
+// API Health Check (handles standard /api/health and Render default /healthz)
+app.get(['/healthz', '/api/health'], async (req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({
