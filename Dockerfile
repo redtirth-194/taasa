@@ -23,3 +23,4 @@ ENV NODE_ENV=production
 ENV DATABASE_URL="file:./dev.db"
 
 CMD ["npm", "start"]
+
