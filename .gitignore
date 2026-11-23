@@ -13,8 +13,9 @@ pnpm-debug.log*
 # Environment
 .env.local
 
-# Raw source images backup
-images/
+# Raw source images backup in root only
+/images/
+!CMS/public/images/**
 
 # Editor & OS files
 .vscode/
